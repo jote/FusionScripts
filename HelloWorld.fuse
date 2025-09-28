@@ -1,0 +1,36 @@
+FuRegisterClass("HelloSliderFuse", CT_Tool, {
+    REGS_Category = "Fuses\\Examples",
+    REGS_OpIconString = "HS",
+    REGS_OpDescription = "Hello World with Slider",
+})
+
+function Create()
+    -- スライダー（UI定義）
+    InSlider = self:AddInput("My Slider", "MySlider", {
+        LINKID_DataType     = "Number",
+        INPID_InputControl  = "SliderControl",  -- ★これが重要
+        INP_Default         = 0.5,
+        INP_MinScale        = 0.0,
+        INP_MaxScale        = 1.0,
+        INP_Integer         = false,
+    })
+
+    -- 入力画像
+    InImage = self:AddInput("Input", "Input", {
+        LINKID_DataType = "Image",
+        LINK_Main = 1,
+    })
+
+    -- 出力画像
+    OutImage = self:AddOutput("Output", "Output", {
+        LINKID_DataType = "Image",
+        LINK_Main = 1,
+    })
+end
+
+function Process(req)
+    local img = InImage:GetValue(req)
+    local v = InSlider:GetValue(req).Value
+    print("MySlider =", v)
+    OutImage:Set(req, img)
+end
