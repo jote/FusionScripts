@@ -1,18 +1,17 @@
-FuRegisterClass("HelloSliderFuse", CT_Tool, {
-    REGS_Category = "Fuses\\Examples",
-    REGS_OpIconString = "HS",
-    REGS_OpDescription = "Hello World with Slider",
+FuRegisterClass("HelloWorldFuse", CT_Tool, {
+    REGS_Category     = "Fuses\\Examples",
+    REGS_OpIconString = "HW",
+    REGS_OpDescription= "Minimal Hello World Fuse with Brightness slider",
 })
 
 function Create()
-    -- スライダー（UI定義）
-    InSlider = self:AddInput("My Slider", "MySlider", {
-        LINKID_DataType     = "Number",
-        INPID_InputControl  = "SliderControl",  -- ★これが重要
-        INP_Default         = 0.5,
-        INP_MinScale        = 0.0,
-        INP_MaxScale        = 1.0,
-        INP_Integer         = false,
+    -- 明るさスライダー（-1.0 ～ +1.0）
+    InBright = self:AddInput("Brightness", "Brightness", {
+        LINKID_DataType    = "Number",
+        INPID_InputControl = "SliderControl",
+        INP_MinScale       = -1.0,
+        INP_MaxScale       =  1.0,
+        INP_Default        =  0.0,
     })
 
     -- 入力画像
@@ -29,8 +28,29 @@ function Create()
 end
 
 function Process(req)
+    -- 入力が無い場合は早期リターン（Viewerに何も出さない）
     local img = InImage:GetValue(req)
-    local v = InSlider:GetValue(req).Value
-    print("MySlider =", v)
-    OutImage:Set(req, img)
+    if not img then
+        print("HelloWorldFuse: no input image")
+        OutImage:Set(req, nil)
+        return
+    end
+
+    -- スライダー値を取得 & ログ出力
+    local bright = InBright:GetValue(req).Value
+    print("HelloWorldFuse Brightness =", bright)
+
+    -- 変化なしならバイパス
+    if bright == 0 then
+        OutImage:Set(req, img)
+        return
+    end
+
+    -- ColorMatrix で明るさ（オフセット）を加算
+    local m = ColorMatrixFull()
+    m:Offset(bright, bright, bright, 0)   -- RGBに同一オフセット、Aは無変更
+
+    -- マトリクス適用して出力
+    local out = img:ApplyMatrixOf(m, {})
+    OutImage:Set(req, out)
 end
