@@ -1,1 +1,2 @@
-# LuaScripts
+# FusionScripts
+Davinci Resolveで利用したスクリプト置き場
