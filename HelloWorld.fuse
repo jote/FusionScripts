@@ -1,17 +1,17 @@
 FuRegisterClass("HelloWorldFuse", CT_Tool, {
-    REGS_Category     = "Fuses\\Examples",
+    REGS_Category = "Fuses\\Examples",
     REGS_OpIconString = "HW",
-    REGS_OpDescription= "Minimal Hello World Fuse with Brightness slider",
+    REGS_OpDescription = "Minimal Hello World Fuse with Brightness slider",
 })
 
 function Create()
     -- 明るさスライダー（-1.0 ～ +1.0）
     InBright = self:AddInput("Brightness", "Brightness", {
-        LINKID_DataType    = "Number",
+        LINKID_DataType = "Number",
         INPID_InputControl = "SliderControl",
-        INP_MinScale       = -1.0,
-        INP_MaxScale       =  1.0,
-        INP_Default        =  0.0,
+        INP_MinScale = -1.0,
+        INP_MaxScale = 1.0,
+        INP_Default = 0.0,
     })
 
     -- 入力画像
